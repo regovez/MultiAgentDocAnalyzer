@@ -1,5 +1,5 @@
-📋 Strategic Intelligence PoC: Executive Narrative Generator
-This application is a Contextual Intelligence Proof of Concept designed to transform raw document submissions into high-impact strategic reports. It uses a multi-agent AI system to analyze PDFs, conduct structured interviews, and synthesize findings into an executive PowerPoint presentation.
+📋 Multi Agent Doc Analyzer PoC
+This application is a Proof of Concept designed to transform raw document submissions into high-impact strategic reports. It uses a multi-agent AI system to analyze PDFs, conduct structured interviews and synthesize findings into an executive PowerPoint presentation.
 
 🚀 Workflow Overview
 Inbox: Approve pending documents. The Architect Agent reads the PDF to generate document-specific discovery questions.
