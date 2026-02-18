@@ -29,9 +29,11 @@ def generate_strategic_questions(file_path=None, file_name="Document"):
     dynamic_questions = None
     if doc_content and "Error" not in doc_content:
         dynamic_questions = run_architect_agent(doc_content, file_name)
+        print("Questions Generated!")
 
     # Fallback for the 4 dynamic questions if PDF fails or Agent fails
     if not dynamic_questions:
+        print("Dynamic Questions")
         fallback_pool = [
             f"What led you to prioritize the specific goals outlined in '{file_name}'?",
             "How did you decide on the primary strategic approach used here?",

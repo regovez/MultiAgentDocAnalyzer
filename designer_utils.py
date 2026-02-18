@@ -5,6 +5,70 @@ from pptx.util import Inches, Pt
 from pptx.dml.color import RGBColor
 
 
+def create_multi_user_pptx(sub_id, transcript_json, gpt4o):
+
+    prompt = f"""
+        Read all the answers received and create an impactful story for a single slide 
+        to communicate the insights in a meaningful way. 
+
+        Data: {json.dumps(transcript_json, indent=2)}
+
+        Instructions:
+        1. Use only the facts/information shared without adding any additional info or data.
+        2. Identify the key insights and client-relevant elements.
+        3. The tone should be professional, persuasive, and cohesive.
+        4. Keep the output concise enough to fit on a single PowerPoint slide (max 200 words).
+        """
+
+    try:
+        response = gpt4o.invoke(prompt)
+
+    except Exception as e:
+        return f"Synthesis Engine Error: {str(e)}"
+
+    # 1. Load the existing PowerPoint template
+    template_path = "Contextual Intelligence Template.pptx"
+
+    if os.path.exists(template_path):
+        prs = Presentation(template_path)
+    else:
+        # Fallback to a blank presentation if template is missing
+        prs = Presentation()
+
+    data = json.loads(transcript_json)
+
+    # 2. Add or Select a slide for the Synthesis
+    # Layout 1 is usually 'Title and Content'
+    slide_story = prs.slides.add_slide(prs.slide_layouts[1])
+
+    # 3. Set the Title
+    title_shape = slide_story.shapes.title
+    title_shape.text = "Strategic Narrative & Unified Insights"
+    title_shape.text_frame.paragraphs[0].font.color.rgb = RGBColor(75, 38, 128)
+
+    # 4. Generate the story from the 3 perspectives
+    # This uses your existing synthesis logic
+    story_text = response.content.strip()
+
+    # 5. Inject the text into the body placeholder
+    body_shape = slide_story.placeholders[1]
+    tf = body_shape.text_frame
+    tf.word_wrap = True
+
+    # Clear existing text and add the new one
+    p = tf.paragraphs[0]
+    p.text = story_text
+    p.font.size = Pt(16)
+    p.font.color.rgb = RGBColor(0, 0, 0)  # Black text for readability
+
+    # 6. Save as a new file to keep the template intact
+    if not os.path.exists("exports"):
+        os.makedirs("exports")
+
+    filename = f"exports/Strategic_Synthesis_{sub_id}.pptx"
+    prs.save(filename)
+    return filename
+
 def add_footer(slide):
     """Adds the GenAI disclaimer legend to the bottom of a slide."""
     # Positioning: 0.5 inches from left, 7.1 inches from top (standard slide height is 7.5)

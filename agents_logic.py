@@ -1,7 +1,7 @@
 import os
 from crewai import Agent, Task, Crew, Process
 from langchain_openai import ChatOpenAI
-from designer_utils import create_executive_pptx
+from designer_utils import create_executive_pptx, create_multi_user_pptx
 from dotenv import load_dotenv
 
 # 1. Configuration
@@ -34,6 +34,10 @@ def get_agent_feedback(user_response, current_question, history):
     )
 
     return Crew(agents=[interviewer], tasks=[task]).kickoff().raw
+
+def generate_multi_user_story(sub_id, data):
+    file_path = create_multi_user_pptx(sub_id,data, gpt4o)
+    return file_path
 
 
 def run_designer_task(sub_id, submitter, transcript_json):

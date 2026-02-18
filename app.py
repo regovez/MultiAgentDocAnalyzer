@@ -18,13 +18,13 @@ st.title("Welcome to the Contextual Intelligence PoC")
 
 st.markdown("""
 ### Getting Started
-1. **Inbox:** Go to the Inbox to approve pending documents.
-2. **Interview:** Conduct the candid interview with the submitter.
+1. **L2 Reviewer POV:** Go to the Inbox to approve pending documents.
+2. **Conversation:** Conduct the conversation with the submitter.
 3. **Tracker:** Monitor progress and download results.
 """)
 
-if st.button("🚀 Start with Inbox"):
-    st.switch_page("pages/1_Inbox.py")
+if st.button("🚀 Start with L2 Reviewer POV"):
+    st.switch_page("pages/1_L2_Reviewer_PoV.py")
 
 # persistent Sidebar Info
 st.sidebar.info("Select a stage from the list above to begin.")

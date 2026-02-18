@@ -2,8 +2,9 @@ import sqlite3
 import time
 import streamlit as st
 from agents_logic import get_agent_feedback
-from database import save_answer, pptx_created
+from database import save_answer, pptx_created, save_complete_questioning
 from agents_logic import run_designer_task
+from fixed_questions import question6, question7, question8, answer2, answer3
 
 st.set_page_config(
     page_title="Contextual Intelligence PoC",
@@ -44,31 +45,37 @@ apply_custom_css()
 
 # --- CONVERSATION SETUP ---
 if "active_interview" not in st.session_state:
-    st.info("Please approve a document in the Inbox first to start a conversation.")
+    st.info("Please approve a document in the L2 Reviewer Queue first to start a conversation.")
     st.stop()
 
 conversation_data = st.session_state.active_interview
 submitter_name = conversation_data.get("user", "submitter")
 doc_path = conversation_data.get("path", "the document")
-questions = conversation_data.get("questions", [])
-total_qs = 10
+dynamic_questions = conversation_data.get("questions", [])
+questions = [question6, question7, question8]
+questions.extend(dynamic_questions)
+total_qs = 12
 
 st.title(f"💬 Conversation with {submitter_name}")
 
 # 2. GREETING LOGIC
 if not st.session_state.conversation_started:
     greeting = (
-        f"Hello {submitter_name}! You are listed as the contact for `{doc_path}`.\n\n"
-        f"I have prepared 10 to help refine this submission. It should take no more than 10 minutes.\n\n"
-        f"Shall we begin our conversation?"
-    )
+                f"Hello {submitter_name}! You’re receiving this survey because you were listed as the contact for `{doc_path}`.\n\n"
+                f"Your work stood out to us, and we’d love to understand a bit more about the thinking behind it and any expected client context.\n"
+                f"We have a few quick questions — around 5 minutes — and your perspective will help strengthen future narratives across teams.\nThanks for taking the time to share your insight.\n\n"
+                f"Shall we begin our conversation?"
+            )
     st.session_state.messages.append({"role": "assistant", "content": greeting})
     st.session_state.conversation_started = True
 
 # Display history
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+        if message["role"] == "user":
+            st.markdown(f"👤 **{submitter_name}** : {message['content']}")
+        else:
+            st.markdown(message["content"])
 
 # --- PHASE B: THE STRUCTURED FORM (Independent Rendering) ---
 if st.session_state.consent_given and st.session_state.current_q_index == 1:
@@ -142,21 +149,24 @@ if st.session_state.consent_given and st.session_state.current_q_index == 1:
                                      "(e.g., HIPAA/FedRAMP).",
                                      "Others"])
 
-        if st.form_submit_button("Next (4 questions remaining)"):
-            form_map = {
-                "AI / GenAI": f1_ai, "Data": f1_data, "Ecosystems": f1_ecosystem,
-                "Talent": f1_talent, "Methods": f1_methods, "Asset": f1_asset,
-                "Nature": str(f2), "Persona": str(f3), "USP": str(f4),
-                "Primary Market Challenge": str(f5), "Avoidance": str(f6)
-            }
+        if st.form_submit_button("Next (7 questions remaining)"):
+            if not f2 or not f3 or not f4 or not f5 or not f6:
+                st.error("⚠️ All sections must have at least one selection before proceeding.")
+            else:
+                form_map = {
+                    "AI / GenAI": f1_ai, "Data": f1_data, "Ecosystems": f1_ecosystem,
+                    "Talent": f1_talent, "Methods": f1_methods, "Asset": f1_asset,
+                    "Nature": str(f2), "Persona": str(f3), "USP": str(f4),
+                    "Primary Market Challenge": str(f5), "Avoidance": str(f6)
+                }
             for q, a in form_map.items():
-                save_answer(st.session_state.active_interview['id'], q, a)
+                save_answer(1, q, a)
 
             st.session_state.current_q_index = 7
             first_dynamic_q = questions[0]
             response_text = (
                 f"Fundamentals received! Let's start our chat.\n\n"
-                f"**Question 7** (3 remaining):\n{first_dynamic_q}"
+                f"**Question 7** (6 remaining):\n{first_dynamic_q}"
             )
 
             # 3. Add to history so it persists after rerun
@@ -189,15 +199,17 @@ if prompt := st.chat_input("Enter your response..."):
         agent_feedback = get_agent_feedback(prompt, answered_q, st.session_state.messages[-5:])
 
         if "PROCEED" in agent_feedback or st.session_state.nudge_count >= 1:
-            save_answer(st.session_state.active_interview['id'], answered_q, prompt)
+            save_answer(1, answered_q, prompt)
             st.session_state.nudge_count = 0
             if idx < total_qs:
                 next_q = questions[idx - 6]
-                response_text = f"**Question {idx + 1}** ({total_qs - (idx + 1)} remaining):<br>{next_q}"
+                response_text = f"**Question {idx + 1}** ({total_qs - (idx + 1)} remaining):\n{next_q}"
                 st.session_state.current_q_index += 1
             else:
-                response_text = "That was the final question! Initiating PowerPoint generation..."
+                response_text = "That was the final question! Thanks for your time."
                 st.session_state.current_q_index += 1
+                save_complete_questioning(2, answer2)
+                save_complete_questioning(3, answer3)
         else:
             st.session_state.nudge_count += 1
             response_text = f"{agent_feedback}\n\n*(Note: If the next answer is also short, I'll move to the next question automatically.)*"
@@ -207,21 +219,21 @@ if prompt := st.chat_input("Enter your response..."):
         final_text = type_response(response_text)
         st.session_state.messages.append({"role": "assistant", "content": final_text})
 
-# --- PHASE D: AUTO-TRIGGER DESIGNER ---
-if st.session_state.current_q_index > total_qs and any(
-        "initiating" in m['content'].lower() for m in st.session_state.messages):
-    sub_id = st.session_state.active_interview['id']
-    with st.status("🎨 Building your PowerPoint...", expanded=True) as status:
-        with sqlite3.connect("submissions.db") as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT transcript, submitter FROM submissions WHERE id = ?", (sub_id,))
-            db_res = cursor.fetchone()
-
-        try:
-            pptx_path = run_designer_task(sub_id, db_res[1], db_res[0])
-            pptx_created(sub_id)
-            status.update(label="✅ PowerPoint Ready!", state="complete", expanded=False)
-            st.success(f"Report generated! Download it in the Tracker.")
-            st.stop()
-        except Exception as e:
-            st.error(f"Error: {e}")
+# # --- PHASE D: AUTO-TRIGGER DESIGNER ---
+# if st.session_state.current_q_index > total_qs and any(
+#         "initiating" in m['content'].lower() for m in st.session_state.messages):
+#     sub_id = st.session_state.active_interview['id']
+#     with st.status("🎨 Building your PowerPoint...", expanded=True) as status:
+#         with sqlite3.connect("submissions.db") as conn:
+#             cursor = conn.cursor()
+#             cursor.execute("SELECT transcript, contact FROM submissions WHERE id = ?", (sub_id,))
+#             db_res = cursor.fetchone()
+#
+#         try:
+#             pptx_path = run_designer_task(sub_id, db_res[1], db_res[0])
+#             pptx_created(sub_id)
+#             status.update(label="✅ PowerPoint Ready!", state="complete", expanded=False)
+#             st.success(f"Report generated! Download it in the Tracker.")
+#             st.stop()
+#         except Exception as e:
+#             st.error(f"Error: {e}")
