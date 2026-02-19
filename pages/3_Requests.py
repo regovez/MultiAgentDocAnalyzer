@@ -36,7 +36,7 @@ cols[1].write("Agentic Commerce State of the Nation POV")
 cols[2].write("Sales & Solutioning Materials")
 cols[3].write("Consumer Good & Services, Retail, Travel")
 cols[4].write("18 Feb 2026")
-cols[5].markdown("**In Progress**") # Status as requested
+cols[5].markdown("**CI - In Progress**") # Status as requested
 
 # # Set page config for a wide layout
 # st.set_page_config(page_title="Requests", layout="wide")
