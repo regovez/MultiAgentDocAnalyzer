@@ -2,7 +2,7 @@ import streamlit as st
 import os
 from database import save_answer
 
-st.set_page_config(page_title="Client Feedback Loop", layout="wide")
+st.set_page_config(page_title="Conversation", layout="wide")
 
 # Purple Palette for the UI
 PURPLE_DEEP = "#4B2680"
