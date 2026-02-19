@@ -1,12 +1,18 @@
-question1 = ("Rate the business impact of this submission on the following parameters: AI / GenAI, Data, Ecosystem, "
-             "Talent, Methods, Asset or Solution")
-question2 = "Which of the following best describes the nature of this submission?"
-question3 = "Which client role or persona was this shared with or is going to be targeted to?"
-question4 = "What is the primary competitive advantage (USP) of this solution compared to standard market offerings?"
-question5 = "Which primary market challenge or client trigger is this material designed to address?"
-question6 = "Which solutions or capabilities position it most strongly, and in what types of opportunities is it meant to gain traction?"
-question7 = "What revenue streams or specific offerings are expected to support or accelerate growth?"
-question8 = "How does this differentiate us from competitors, and in which competitive scenarios is it most effective?"
+#question1 = ("Rate the business impact of this submission on the following parameters: AI / GenAI, Data, Ecosystem, "
+#             "Talent, Methods, Asset or Solution")
+#question2 = "Which of the following best describes the nature of this submission?"
+#question3 = "Which client role or persona was this shared with or is going to be targeted to?"
+#question4 = "What is the primary competitive advantage (USP) of this solution compared to standard market offerings?"
+#question5 = "Which primary market challenge or client trigger is this material designed to address?"
+#question6 = "Which solutions or capabilities position it most strongly, and in what types of opportunities is it meant to gain traction?"
+#question7 = "What revenue streams or specific offerings are expected to support or accelerate growth?"
+#question8 = "How does this differentiate us from competitors, and in which competitive scenarios is it most effective?"
+
+question1 = "How did the differentiated client narrative resonate with the client?"
+question2 = "What were the most relevant Offerings and Solutions for your client conversation?"
+question3 = "Which were the most relevant Products and Platform for your client conversation?"
+question4 = "Which Client Personas did you engage with. Select all those apply?"
+question5 = "What were they most interested in and what other questions did they ask?"
 
 
 answer2 = {
