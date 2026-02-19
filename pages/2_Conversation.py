@@ -21,7 +21,7 @@ st.title("💬 Conversation with sushmita.bhamidipati")
 
 with st.form("client_feedback_form"):
     # --- SECTION 1: NARRATIVE RESONANCE ---
-    st.subheader("1. How did the differentiated client narrative resonate with the client.")
+    st.subheader("1. How did the differentiated client narrative resonate with the client?")
     q1 = st.select_slider(
         " ",
         options=[0, 1, 2, 3, 4],
@@ -78,7 +78,7 @@ with st.form("client_feedback_form"):
     st.divider()
 
     # --- SECTION 5: OPEN FEEDBACK ---
-    st.subheader("5. What were they most interested in and what other questions did they ask.")
+    st.subheader("5. What were they most interested in and what other questions did they ask?")
     q5 = st.text_area(" ", height=150)
 
     # --- SUBMIT ---
