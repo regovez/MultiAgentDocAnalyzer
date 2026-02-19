@@ -134,7 +134,7 @@ cols[5].markdown("**CI - In Progress**") # Status as requested
 
 st.divider()
 st.subheader("Final Synthesis")
-st.info("After receiving the answers from 3 conversations a slide will be available.")
+st.info("After receiving the answers from the 3 conversations of after 15 days a slide will be available.")
 
 if "active_interview" in st.session_state:
     sub_id = st.session_state.active_interview['id']
