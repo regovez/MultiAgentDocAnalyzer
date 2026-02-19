@@ -1,6 +1,8 @@
 import os
 from crewai import Agent, Task, Crew, Process
 from langchain_openai import ChatOpenAI
+from multipart import file_path
+
 from designer_utils import create_executive_pptx, create_multi_user_pptx
 from dotenv import load_dotenv
 
@@ -36,7 +38,8 @@ def get_agent_feedback(user_response, current_question, history):
     return Crew(agents=[interviewer], tasks=[task]).kickoff().raw
 
 def generate_multi_user_story(sub_id, data):
-    file_path = create_multi_user_pptx(sub_id,data, gpt4o)
+    #file_path = create_multi_user_pptx(sub_id,data, gpt4o)
+    file_path = f"exports/Strategic_Synthesis_{sub_id}.pptx"
     return file_path
 
 

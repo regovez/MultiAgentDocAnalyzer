@@ -1,5 +1,4 @@
 .env
 submissions.db
-exports/
 venv/
 __pycache__/
