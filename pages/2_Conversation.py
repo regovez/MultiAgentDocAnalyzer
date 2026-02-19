@@ -17,7 +17,7 @@ impact_map = {
     4: "🤩"
 }
 
-st.title("🤝 Conversation")
+st.title("💬 Conversation with sushmita.bhamidipati")
 
 with st.form("client_feedback_form"):
     # --- SECTION 1: NARRATIVE RESONANCE ---
@@ -63,20 +63,17 @@ with st.form("client_feedback_form"):
 
     # --- SECTION 4: CLIENT PERSONAS ---
     st.subheader("4. Which Client Personas did you engage with?")
-    cp_cols = st.columns(2)
-    with cp_cols[0]:
-        per1 = st.select_slider("Chief Marketing Officer", options=[0, 1, 2, 3, 4], format_func=lambda x: impact_map[x])
-        per2 = st.select_slider("Chief Technology Officer", options=[0, 1, 2, 3, 4],
+    per1 = st.select_slider("Chief Marketing Officer", options=[0, 1, 2, 3, 4], format_func=lambda x: impact_map[x])
+    per2 = st.select_slider("Chief Technology Officer", options=[0, 1, 2, 3, 4],
                                 format_func=lambda x: impact_map[x])
-        per3 = st.select_slider("Chief Transformation Officer", options=[0, 1, 2, 3, 4],
+    per3 = st.select_slider("Chief Transformation Officer", options=[0, 1, 2, 3, 4],
                                 format_func=lambda x: impact_map[x])
-        per4 = st.select_slider("Chief Executive Officer", options=[0, 1, 2, 3, 4], format_func=lambda x: impact_map[x])
-    with cp_cols[1]:
-        per5 = st.select_slider("Chief Information Officer", options=[0, 1, 2, 3, 4],
-                                format_func=lambda x: impact_map[x])
-        per6 = st.select_slider("Chief Data & AI Officer", options=[0, 1, 2, 3, 4], format_func=lambda x: impact_map[x])
-        per7 = st.select_slider("Global Business Services Lead", options=[0, 1, 2, 3, 4],
-                                format_func=lambda x: impact_map[x])
+    per4 = st.select_slider("Chief Executive Officer", options=[0, 1, 2, 3, 4], format_func=lambda x: impact_map[x])
+    per5 = st.select_slider("Chief Information Officer", options=[0, 1, 2, 3, 4],
+                            format_func=lambda x: impact_map[x])
+    per6 = st.select_slider("Chief Data & AI Officer", options=[0, 1, 2, 3, 4], format_func=lambda x: impact_map[x])
+    per7 = st.select_slider("Global Business Services Lead", options=[0, 1, 2, 3, 4],
+                            format_func=lambda x: impact_map[x])
 
     st.divider()
 
